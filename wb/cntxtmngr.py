@@ -1,5 +1,3 @@
-from http.server import HTTPServer
-
 class ServerContextManager:
     def __init__(self, server):
         self.server = server
