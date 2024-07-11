@@ -19,12 +19,14 @@ def authorize_request(func):
     def wrapper(*args, **kwargs):
         handler = args[0]
         print("Authorizing request...")
-        # For testing, authorize all requests
-        authorized = True  # Change this to your actual authorization logic
+        # Check for custom header 'X-Authorized-User' with value 'true'
+        authorized = handler.headers.get('X-Authorized-User') == 'true'
         if authorized:
             return func(*args, **kwargs)
         else:
             handler.send_response(403)
+            handler.send_header("Content-type", "text/html")
             handler.end_headers()
+            handler.wfile.write(bytes("Forbidden: Unauthorized", "utf-8"))
             return
     return wrapper
