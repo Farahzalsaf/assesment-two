@@ -17,7 +17,7 @@ def authorize_request(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         print("Authorizing request...")
-        authorized = False  # Toggle this value to simulate authorization
+        authorized = True # Toggle this value to simulate authorization
         if authorized:
             return func(self, *args, **kwargs)
         else:
