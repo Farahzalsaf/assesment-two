@@ -1,4 +1,5 @@
 import asyncio
+
 class RequestIterator:
     def __init__(self, requests):
         self.requests = requests
@@ -15,11 +16,9 @@ class RequestIterator:
         else:
             raise StopIteration
 
-
-#async iterators
+# Async iterators
 async def async_request_handler(requests):
-    for request in requests:
-        await asyncio.sleep(1)
+    async for request in AsyncRequestIterator(requests):
         print(f"Handled request: {request}")
 
 class AsyncRequestIterator:

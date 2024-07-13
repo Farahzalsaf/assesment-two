@@ -1,55 +1,37 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import asyncio
+from aiohttp import web #type:ignore
 from singleton import SingletonMeta
-from cntxtmngr import ServerContextManager
 from decorators import log_request, authorize_request
+from iterators import async_request_handler
 
 hostName = "localhost"
 serverPort = 8080
 
-class MyServer(BaseHTTPRequestHandler, metaclass=SingletonMeta):
-    @log_request
-    @authorize_request
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write(bytes("<html><head><title>GET Request</title></head>", "utf-8"))
-        self.wfile.write(bytes("<p>This is a GET request.</p>", "utf-8"))
-        self.wfile.write(bytes("</body></html>", "utf-8"))
+class MyServer(metaclass=SingletonMeta):
+    def __init__(self):
+        self.app = web.Application()
+        self.app.router.add_get('/', self.handle_get)
+        self.app.router.add_post('/', self.handle_post)
 
     @log_request
     @authorize_request
-    def do_POST(self):
+    async def handle_get(self, request):
+        return web.Response(text="<html><head><title>GET Request</title></head><body><p>This is a GET request.</p></body></html>", content_type='text/html')
+
+    @log_request
+    @authorize_request
+    async def handle_post(self, request):
         try:
-            print("POST request received")
-            content_length = int(self.headers['Content-Length'])  # Get the size of the data
-            print(f"Content-Length: {content_length}")
-            post_data = self.rfile.read(content_length)  # Read the data
-            print(f"Received data: {post_data.decode('utf-8')}")  # Debugging statement
-
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.wfile.write(bytes("<html><head><title>POST Request</title></head>", "utf-8"))
-            self.wfile.write(bytes("<p>This is a POST request.</p>", "utf-8"))
-            self.wfile.write(bytes(f"<p>Received: {post_data.decode('utf-8')}</p>", "utf-8"))
-            self.wfile.write(bytes("</body></html>", "utf-8"))
+            post_data = await request.post()
+            await async_request_handler([str(post_data)])
+            response_text = f"<html><head><title>POST Request</title></head><body><p>This is a POST request.</p><p>Received: {post_data}</p></body></html>"
+            return web.Response(text=response_text, content_type='text/html')
         except Exception as e:
-            print(f"Error handling POST request: {e}")
-            self.send_response(500)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.wfile.write(bytes("<html><body><h1>500 Internal Server Error</h1></body></html>"))
+            return web.Response(text="<html><body><h1>500 Internal Server Error</h1></body></html>", content_type='text/html', status=500)
+
+    def run(self):
+        web.run_app(self.app, host=hostName, port=serverPort)
 
 if __name__ == "__main__":
-    webServer = HTTPServer((hostName, serverPort), MyServer)
-    print(f"Server started http://{hostName}:{serverPort}")
-
-    # Using the context manager to manage server resources
-    with ServerContextManager(webServer):
-        try:
-            webServer.serve_forever()
-        except KeyboardInterrupt:
-            pass
-
-    print("Server stopped.")
+    server = MyServer()
+    server.run()
