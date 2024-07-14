@@ -77,15 +77,13 @@ Uses async context management methods to setup and cleanup the server.
 Contains unit tests for each module to ensure correct functionality.
 
 ### Example Usage
-## Sending a GET Request
-You can test the GET request handler by sending a request to the server using curl or a web browser:
 
-## bash
+## GET
 curl -X GET http://localhost:8080
 Sending a POST Request
 You can test the POST request handler by sending a request with data to the server using curl:
 
-## bash
+## POST
 
 curl -X POST -d "Body content" http://localhost:8080
 This will return an HTML response indicating that the POST request was received along with the data sent.
@@ -94,3 +92,5 @@ This will return an HTML response indicating that the POST request was received 
 
 
 
+## For testing unit tests:
+python3 -m unittest tests
