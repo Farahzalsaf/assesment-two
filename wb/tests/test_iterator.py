@@ -1,6 +1,6 @@
 import unittest
 import asyncio
-from iterators import RequestIterator, async_request_handler, AsyncRequestIterator
+from iterators import RequestIterator, async_request_handler
 
 class TestIterators(unittest.TestCase):
 
