@@ -1,6 +1,6 @@
 import unittest
 
-from singleton import SingletonClass  # Import the correct class
+from singleton import SingletonClass 
 
 class TestSingleton(unittest.TestCase):
     def test_singleton_instance(self):
