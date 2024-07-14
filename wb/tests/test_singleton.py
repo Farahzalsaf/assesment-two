@@ -1,9 +1,4 @@
-import sys
-import os
 import unittest
-
-# Add the project directory to the system path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from singleton import SingletonClass  # Import the correct class
 
