@@ -1,15 +1,19 @@
-import unittest
-import asyncio
-from aiohttp import web # type: ignore
-from cntxtmngr import ServerContextManager
+# cntxtmngr.py
+from webserver import host, server
+from aiohttp import web #type: ignore
 
-class TestContextManager(unittest.IsolatedAsyncioTestCase):
+class ServerContextManager:
+    def __init__(self, runner: web.AppRunner):
+        self.runner = runner
 
-    async def test_server_context_manager(self):
-        app = web.Application()
-        runner = web.AppRunner(app)
-        async with ServerContextManager(runner) as manager:
-            self.assertIsNotNone(manager)
+    async def __aenter__(self):
+        await self.runner.setup()
+        self.site = web.TCPSite(self.runner, host, server)
+        await self.site.start()
+        print("Starting server...")
+        return self
 
-if __name__ == '__main__':
-    unittest.main()
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.site.stop()
+        await self.runner.cleanup()
+        print("Stopping server...")

@@ -1,13 +1,11 @@
 import unittest
-from singleton import SingletonMeta
-from webserver import MyServer
+from singleton import SingletonClass
 
 class TestSingleton(unittest.TestCase):
+    def test_singleton_instance(self):
+        server1 = SingletonClass("127.0.0.1", 8081)
+        server2 = SingletonClass("127.0.0.1", 8081)
+        self.assertIs(server1, server2)
 
-    def test_singleton(self):
-        instance1 = MyServer()
-        instance2 = MyServer()
-        self.assertIs(instance1, instance2)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

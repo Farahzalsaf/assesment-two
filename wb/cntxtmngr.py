@@ -1,5 +1,5 @@
 from aiohttp import web #type: ignore
-from webserver import hostName, serverPort
+from webserver import host, server
 
 class ServerContextManager:
     def __init__(self, runner):
@@ -7,7 +7,7 @@ class ServerContextManager:
 
     async def __aenter__(self):
         await self.runner.setup()
-        self.site = web.TCPSite(self.runner, hostName, serverPort)
+        self.site = web.TCPSite(self.runner, host, server)
         await self.site.start()
         print("Starting server...")
         return self

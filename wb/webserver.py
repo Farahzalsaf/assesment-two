@@ -1,14 +1,14 @@
 import asyncio
-from aiohttp import web #type:ignore
+from aiohttp import web  # type: ignore
 from singleton import SingletonMeta
 from decorators import log_request, authorize_request
 from iterators import async_request_handler
-
-hostName = "localhost"
-serverPort = 8080
-
+host = "localhost"
+server = 8080
 class MyServer(metaclass=SingletonMeta):
-    def __init__(self):
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
         self.app = web.Application()
         self.app.router.add_get('/', self.handle_get)
         self.app.router.add_post('/', self.handle_post)
@@ -30,8 +30,8 @@ class MyServer(metaclass=SingletonMeta):
             return web.Response(text="<html><body><h1>500 Internal Server Error</h1></body></html>", content_type='text/html', status=500)
 
     def run(self):
-        web.run_app(self.app, host=hostName, port=serverPort)
+        web.run_app(self.app, host=self.host, port=self.port)
 
 if __name__ == "__main__":
-    server = MyServer()
+    server = MyServer("localhost", 8080)
     server.run()
