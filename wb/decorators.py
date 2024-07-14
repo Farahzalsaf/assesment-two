@@ -1,5 +1,5 @@
 from functools import wraps
-from aiohttp import web
+from aiohttp import web #type:ignore
 
 def log_request(func):
     @wraps(func)
