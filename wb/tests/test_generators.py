@@ -1,5 +1,5 @@
 import unittest
-from aiohttp import web
+from aiohttp import web #type: ignore
 from cntxtmngr import ServerContextManager
 
 class TestContextManager(unittest.IsolatedAsyncioTestCase):
