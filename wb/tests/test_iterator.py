@@ -1,18 +1,18 @@
-import sys
-import os
 import unittest
+import asyncio
+from iterators import RequestIterator, async_request_handler, AsyncRequestIterator
 
-# Add the project directory to the system path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+class TestIterators(unittest.TestCase):
 
-from iterators import RequestIterator
-
-class TestRequestIterator(unittest.TestCase):
-    def test_iterator(self):
-        requests = ["req1", "req2", "req3"]
+    def test_request_iterator(self):
+        requests = ['request1', 'request2', 'request3']
         iterator = RequestIterator(requests)
-        result = [req for req in iterator]
+        result = list(iterator)
         self.assertEqual(result, requests)
 
-if __name__ == "__main__":
+    def test_async_request_handler(self):
+        requests = ['request1', 'request2', 'request3']
+        asyncio.run(async_request_handler(requests))
+
+if __name__ == '__main__':
     unittest.main()
